@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
-import {ConfiglyText, ConfiglyDropdown} from 'configly/react';
-import ConfiglyComponent from 'configly/react';
+import {ConfiglyText, ConfiglyDropdown} from '@configly/react';
+import ConfiglyComponent from '@configly/react';
 
 function renderCustom(value) {
   console.log(value);

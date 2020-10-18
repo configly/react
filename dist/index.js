@@ -7,13 +7,15 @@ function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'defau
 var React__default = /*#__PURE__*/_interopDefaultLegacy(React);
 
 var CONFIGLY_SERVER_URL = "http://configly.herokuapp.com/api/v1/value";
-var CONFIGLY_API_KEY = 'yikes';
+var CONFIGLY_API_KEY = 'hq0t7YiT3NwEnoknH4fp6EHL66pOcDjv';
 function loadConfiglyData(key, onComplete) {
-    fetch(CONFIGLY_SERVER_URL + "?keys[]=" + key + "&apiKey=" + CONFIGLY_API_KEY, { method: 'GET' })
+    var headers = new Headers();
+    headers.append('Authorization', 'Basic ' + btoa(CONFIGLY_API_KEY + ":"));
+    fetch(CONFIGLY_SERVER_URL + "?keys[]=" + key, { method: 'GET', headers: headers })
         .then(function (res) { return res.json(); })
         .then(function (result) { return onComplete(result.data[key].value); }, function (error) { console.log(error); });
 }
-function BaseConfiglyComponent(props, renderFunction) {
+function BaseConfiglyComponent(props) {
     var _a = React.useState(null), value = _a[0], setValue = _a[1];
     var _b = React.useState(false), requestInProgress = _b[0], setRequestInProgress = _b[1];
     React.useEffect(function () {
@@ -22,27 +24,25 @@ function BaseConfiglyComponent(props, renderFunction) {
             setRequestInProgress(true);
         }
     }, [requestInProgress, value, props.prop]);
-    if (value === null) {
+    if (value == null) {
         return (React__default['default'].createElement("span", null, "Loading..."));
     }
-    else {
-        return (renderFunction(value));
-    }
+    return (props.render(value || ''));
 }
 function ConfiglyComponent(props) {
-    var render = props.render;
-    return BaseConfiglyComponent(props, function (value) { return render(value); });
+    return (React__default['default'].createElement(BaseConfiglyComponent, { prop: props.prop, render: props.render }));
 }
 function ConfiglyText(props) {
-    return BaseConfiglyComponent(props, function (value) { return (React__default['default'].createElement("span", null, value)); });
+    return (React__default['default'].createElement(BaseConfiglyComponent, { prop: props.prop, render: function (value) { return (React__default['default'].createElement("span", null, value)); } }));
 }
 function ConfiglyDropdown(props) {
-    return BaseConfiglyComponent(props, function (value) {
+    var renderDropdown = function (value) {
         var options = Object.keys(value).map(function (key) {
             return React__default['default'].createElement("option", { value: key }, value[key]);
         });
         return (React__default['default'].createElement("select", null, options));
-    });
+    };
+    return (React__default['default'].createElement(BaseConfiglyComponent, { prop: props.prop, render: renderDropdown }));
 }
 
 exports.ConfiglyDropdown = ConfiglyDropdown;
