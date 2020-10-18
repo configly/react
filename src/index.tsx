@@ -1,16 +1,15 @@
-import React, {useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 
 const CONFIGLY_SERVER_URL = "http://configly.herokuapp.com/api/v1/value";
-const CONFIGLY_API_KEY = 'hq0t7YiT3NwEnoknH4fp6EHL66pOcDjv';
 
 interface props {
     prop: string,
     render: (value: string) => JSX.Element,
 }
 
-function loadConfiglyData(key: string, onComplete: (data: string) => any) {
+function loadConfiglyData(key: string, apiKey: string | null, onComplete: (data: string) => any) {
     const headers = new Headers();
-    headers.append('Authorization', 'Basic ' + btoa(`${CONFIGLY_API_KEY}:`));
+    headers.append('Authorization', 'Basic ' + btoa(`${apiKey}:`));
     fetch(`${CONFIGLY_SERVER_URL}?keys[]=${key}`, {method: 'GET', headers})
       .then(res => res.json())
       .then((result) => onComplete(result.data[key].value), (error) => {console.log(error)});
@@ -18,11 +17,12 @@ function loadConfiglyData(key: string, onComplete: (data: string) => any) {
 
 function BaseConfiglyComponent(props: props) {
     const [value, setValue] = useState(null);
+    const config = useContext(ConfiglyContext);
     const [requestInProgress, setRequestInProgress] = useState(false);
 
     useEffect(() => {
         if (!requestInProgress && !value) {
-            loadConfiglyData(props.prop, (value: any) => {setValue(value); setRequestInProgress(false);});
+            loadConfiglyData(props.prop, config.apiKey, (value: any) => {setValue(value); setRequestInProgress(false);});
             setRequestInProgress(true);
         }
     }, [requestInProgress, value, props.prop]);
@@ -52,4 +52,6 @@ function ConfiglyDropdown(props: props) {
     return (<BaseConfiglyComponent prop={props.prop} render={renderDropdown} />);
 }
 
-export {ConfiglyText, ConfiglyDropdown, ConfiglyComponent as default};
+const ConfiglyContext = React.createContext({apiKey: null})
+
+export {ConfiglyText, ConfiglyDropdown, ConfiglyContext, ConfiglyComponent as default};

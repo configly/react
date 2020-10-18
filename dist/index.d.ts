@@ -1,4 +1,4 @@
-/// <reference types="react" />
+import React from 'react';
 interface props {
     prop: string;
     render: (value: string) => JSX.Element;
@@ -6,4 +6,7 @@ interface props {
 declare function ConfiglyComponent(props: props): JSX.Element;
 declare function ConfiglyText(props: props): JSX.Element;
 declare function ConfiglyDropdown(props: props): JSX.Element;
-export { ConfiglyText, ConfiglyDropdown, ConfiglyComponent as default };
+declare const ConfiglyContext: React.Context<{
+    apiKey: null;
+}>;
+export { ConfiglyText, ConfiglyDropdown, ConfiglyContext, ConfiglyComponent as default };

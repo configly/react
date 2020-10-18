@@ -7,20 +7,20 @@ function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'defau
 var React__default = /*#__PURE__*/_interopDefaultLegacy(React);
 
 var CONFIGLY_SERVER_URL = "http://configly.herokuapp.com/api/v1/value";
-var CONFIGLY_API_KEY = 'hq0t7YiT3NwEnoknH4fp6EHL66pOcDjv';
-function loadConfiglyData(key, onComplete) {
+function loadConfiglyData(key, apiKey, onComplete) {
     var headers = new Headers();
-    headers.append('Authorization', 'Basic ' + btoa(CONFIGLY_API_KEY + ":"));
+    headers.append('Authorization', 'Basic ' + btoa(apiKey + ":"));
     fetch(CONFIGLY_SERVER_URL + "?keys[]=" + key, { method: 'GET', headers: headers })
         .then(function (res) { return res.json(); })
         .then(function (result) { return onComplete(result.data[key].value); }, function (error) { console.log(error); });
 }
 function BaseConfiglyComponent(props) {
     var _a = React.useState(null), value = _a[0], setValue = _a[1];
+    var config = React.useContext(ConfiglyContext);
     var _b = React.useState(false), requestInProgress = _b[0], setRequestInProgress = _b[1];
     React.useEffect(function () {
         if (!requestInProgress && !value) {
-            loadConfiglyData(props.prop, function (value) { setValue(value); setRequestInProgress(false); });
+            loadConfiglyData(props.prop, config.apiKey, function (value) { setValue(value); setRequestInProgress(false); });
             setRequestInProgress(true);
         }
     }, [requestInProgress, value, props.prop]);
@@ -44,7 +44,9 @@ function ConfiglyDropdown(props) {
     };
     return (React__default['default'].createElement(BaseConfiglyComponent, { prop: props.prop, render: renderDropdown }));
 }
+var ConfiglyContext = React__default['default'].createContext({ apiKey: null });
 
+exports.ConfiglyContext = ConfiglyContext;
 exports.ConfiglyDropdown = ConfiglyDropdown;
 exports.ConfiglyText = ConfiglyText;
 exports.default = ConfiglyComponent;
