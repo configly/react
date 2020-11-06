@@ -1,5 +1,5 @@
 {
-  "name": "@configly/react",
+  "name": "configly-react",
   "version": "0.0.1",
   "description": "Configly library for react",
   "main": "dist/index.js",
