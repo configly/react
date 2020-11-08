@@ -26,10 +26,14 @@
     "build": "rollup -c",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "author": {
+    "name": "Configly",
+    "email": "configlyco@gmail.com",
+    "url": "https//config.ly"
+  },
   "repository": {
+    "type": "git",
     "url": "git+https://github.com/configly/react.git",
-    "author": "Dana Levine",
-    "license": "MIT",
     "bugs": {
       "url": "https://github.com/configly/react/issues"
     }
