@@ -21,6 +21,7 @@
   "files": [
     "dist"
   ],
+  "license": "MIT",
   "scripts": {
     "build": "rollup -c",
     "test": "echo \"Error: no test specified\" && exit 1"
