@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 
-const CONFIGLY_SERVER_URL = "http://configly.herokuapp.com/api/v1/value";
+const CONFIGLY_SERVER_URL = "https://api.config.ly/api/v1/value";
 
 interface props {
     prop: string,
