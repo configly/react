@@ -73,8 +73,8 @@ You will need to specify your API key using a ConfiglyContext Provider. This sho
 You can then use the predefined components to display text or dropdowns
 
 ```html
-<ConfiglyText prop="hello"/></span></p>
-<ConfiglyDropdown prop="hello-dropdown"/> </p>
+<ConfiglyText prop="hello"/></span>
+<ConfiglyDropdown prop="hello-dropdown"/>
 ```
 
 To render a custom component, you will pass a render function to the ConfiglyComponent. It takes a single argument, which is the value returned by Configly.
