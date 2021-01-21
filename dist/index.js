@@ -6,7 +6,7 @@ function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'defau
 
 var React__default = /*#__PURE__*/_interopDefaultLegacy(React);
 
-var CONFIGLY_SERVER_URL = "http://configly.herokuapp.com/api/v1/value";
+var CONFIGLY_SERVER_URL = "https://api.config.ly/api/v1/value";
 function loadConfiglyData(key, apiKey, onComplete) {
     var headers = new Headers();
     headers.append('Authorization', 'Basic ' + btoa(apiKey + ":"));

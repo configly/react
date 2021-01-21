@@ -1,10 +1,13 @@
 {
   "name": "configly-react",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Configly library for react",
   "main": "dist/index.js",
+  "module": "dist/index.es.js",
   "dependencies": {
+    "classnames": "^2.2.6"
   },
+  "types": "dist/index.d.ts",
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babel-runtime": "^6.26.0",

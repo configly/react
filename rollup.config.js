@@ -11,7 +11,7 @@ export default {
       exports: 'named',
       sourcemap: true,
       strict: false
-    }
+    },
   ],
   plugins: [
     typescript({ objectHashIgnoreUnknownHack: true })
