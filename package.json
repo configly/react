@@ -3,7 +3,6 @@
   "version": "0.0.2",
   "description": "Configly library for react",
   "main": "dist/index.js",
-  "module": "dist/index.es.js",
   "dependencies": {
     "classnames": "^2.2.6"
   },
