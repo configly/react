@@ -12,28 +12,38 @@ function loadConfiglyData(key, apiKey, onComplete) {
     headers.append('Authorization', 'Basic ' + btoa(apiKey + ":"));
     fetch(CONFIGLY_SERVER_URL + "?keys[]=" + key, { method: 'GET', headers: headers })
         .then(function (res) { return res.json(); })
-        .then(function (result) { return onComplete(result.data[key].value); }, function (error) { console.log(error); });
+        .then(function (result) { var _a; return onComplete((_a = result.data[key]) === null || _a === void 0 ? void 0 : _a.value); }, function (error) { console.log(error); });
 }
 function BaseConfiglyComponent(props) {
     var _a = React.useState(null), value = _a[0], setValue = _a[1];
+    var _b = React.useState(false), loaded = _b[0], setLoaded = _b[1];
     var config = React.useContext(ConfiglyContext);
-    var _b = React.useState(false), requestInProgress = _b[0], setRequestInProgress = _b[1];
+    var _c = React.useState(false), requestInProgress = _c[0], setRequestInProgress = _c[1];
+    var emptyValue = value === null || value === undefined;
     React.useEffect(function () {
-        if (!requestInProgress && !value) {
-            loadConfiglyData(props.prop, config.apiKey, function (value) { setValue(value); setRequestInProgress(false); });
+        if (!requestInProgress && !loaded) {
+            loadConfiglyData(props.prop, config.apiKey, function (value) { setValue(value); setLoaded(true); setRequestInProgress(false); });
             setRequestInProgress(true);
         }
     }, [requestInProgress, value, props.prop]);
-    if (value == null) {
-        return (React__default['default'].createElement("span", null, "Loading..."));
+    if (!loaded && !props.default) {
+        return (React__default['default'].createElement(React__default['default'].Fragment, null, "LOADING..."));
     }
-    return (props.render(value || ''));
+    else if ((!loaded || emptyValue) && props.default && props.render) {
+        return (props.render(props.default));
+    }
+    else if (loaded && props.render && !emptyValue) {
+        return (props.render(value || ''));
+    }
+    else {
+        return (React__default['default'].createElement(React__default['default'].Fragment, null));
+    }
 }
 function ConfiglyComponent(props) {
-    return (React__default['default'].createElement(BaseConfiglyComponent, { prop: props.prop, render: props.render }));
+    return (React__default['default'].createElement(BaseConfiglyComponent, { prop: props.prop, render: props.render, default: props.default }));
 }
 function ConfiglyText(props) {
-    return (React__default['default'].createElement(BaseConfiglyComponent, { prop: props.prop, render: function (value) { return (React__default['default'].createElement("span", null, value)); } }));
+    return (React__default['default'].createElement(BaseConfiglyComponent, { prop: props.prop, render: function (value) { return (React__default['default'].createElement("span", null, value)); }, default: props.default }));
 }
 function ConfiglyDropdown(props) {
     var renderDropdown = function (value) {
@@ -42,7 +52,7 @@ function ConfiglyDropdown(props) {
         });
         return (React__default['default'].createElement("select", null, options));
     };
-    return (React__default['default'].createElement(BaseConfiglyComponent, { prop: props.prop, render: renderDropdown }));
+    return (React__default['default'].createElement(BaseConfiglyComponent, { prop: props.prop, render: renderDropdown, default: props.default }));
 }
 var ConfiglyContext = React__default['default'].createContext({ apiKey: null });
 

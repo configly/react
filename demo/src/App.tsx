@@ -17,7 +17,7 @@ function App() {
         <header className="App-header">
           <p>This is an example app for configly.</p>
           <p>This is an example of some text that was fetched dynamically by configly: <span className="blue"><ConfiglyText prop="react-text"/></span></p>
-          <p>This is an example of a dropdown rendered dynamically by configly: <ConfiglyDropdown prop="react-dropdown"/> </p>
+          <p>This is an example of a dropdown rendered dynamically by configly: <ConfiglyDropdown prop="react-dropdown" default={{ a: 'b', c: 'd'}}/> </p>
           <p>This is an example of how you can use our component to fetch any arbitrary JSON objects: <ConfiglyComponent prop="react-custom" render={renderCustom} /> </p>
         </header>
       </div>

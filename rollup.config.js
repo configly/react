@@ -4,6 +4,9 @@ import pkg from './package.json'
 
 export default {
   input: 'src/index.tsx',
+  plugins: [
+    typescript({lib: ["es5", "es6", "dom"], target: "es5"})
+  ],
   output: [
     {
       file: pkg.main,
@@ -12,9 +15,6 @@ export default {
       sourcemap: true,
       strict: false
     },
-  ],
-  plugins: [
-    typescript({ objectHashIgnoreUnknownHack: true })
   ],
   external: ['react', 'react-dom']
 }

@@ -4,7 +4,8 @@ const CONFIGLY_SERVER_URL = "https://api.config.ly/api/v1/value";
 
 interface props {
     prop: string,
-    render: (value: string) => JSX.Element,
+    render?: (value: string) => JSX.Element,
+    default?: any
 }
 
 function loadConfiglyData(key: string, apiKey: string | null, onComplete: (data: string) => any) {
@@ -12,33 +13,40 @@ function loadConfiglyData(key: string, apiKey: string | null, onComplete: (data:
     headers.append('Authorization', 'Basic ' + btoa(`${apiKey}:`));
     fetch(`${CONFIGLY_SERVER_URL}?keys[]=${key}`, {method: 'GET', headers})
       .then(res => res.json())
-      .then((result) => onComplete(result.data[key].value), (error) => {console.log(error)});
+      .then((result) => onComplete(result.data[key]?.value), (error) => {console.log(error)});
 }
 
 function BaseConfiglyComponent(props: props) {
     const [value, setValue] = useState(null);
+    const [loaded, setLoaded] = useState(false);
     const config = useContext(ConfiglyContext);
     const [requestInProgress, setRequestInProgress] = useState(false);
+    const emptyValue = value === null || value === undefined;
 
     useEffect(() => {
-        if (!requestInProgress && !value) {
-            loadConfiglyData(props.prop, config.apiKey, (value: any) => {setValue(value); setRequestInProgress(false);});
+        if (!requestInProgress && !loaded) {
+            loadConfiglyData(props.prop, config.apiKey, (value: any) => { setValue(value); setLoaded(true); setRequestInProgress(false);});
             setRequestInProgress(true);
         }
     }, [requestInProgress, value, props.prop]);
 
-    if (value == null) {
-        return(<span>Loading...</span>);
+    if (!loaded && !props.default) {
+        return (<React.Fragment>LOADING...</React.Fragment>)
+    } else if ((!loaded || emptyValue) && props.default && props.render) {
+        return (props.render(props.default));
+    } else if (loaded && props.render && !emptyValue) {
+        return(props.render(value || ''));
+    } else {
+        return (<React.Fragment />);
     }
-    return(props.render(value || ''));
 }
 
 function ConfiglyComponent(props: props) {
-    return (<BaseConfiglyComponent prop={props.prop} render={props.render} />);
+    return (<BaseConfiglyComponent prop={props.prop} render={props.render} default={props.default} />);
 }
 
 function ConfiglyText(props: props) {
-    return (<BaseConfiglyComponent prop={props.prop} render={(value: string) => { return (<span>{value}</span>)}} />);
+    return (<BaseConfiglyComponent prop={props.prop} render={(value: string) => { return (<span>{value}</span>) }} default={props.default} />);
 }
 
 function ConfiglyDropdown(props: props) {
@@ -49,9 +57,13 @@ function ConfiglyDropdown(props: props) {
 
         return (<select>{options}</select>);
     }
-    return (<BaseConfiglyComponent prop={props.prop} render={renderDropdown} />);
+    return (<BaseConfiglyComponent prop={props.prop} render={renderDropdown} default={props.default}/>);
 }
 
-const ConfiglyContext = React.createContext({apiKey: null})
+interface ConfiglyContextType {
+    apiKey: string | null
+}
+
+const ConfiglyContext = React.createContext<ConfiglyContextType>({apiKey: null})
 
 export {ConfiglyText, ConfiglyDropdown, ConfiglyContext, ConfiglyComponent as default};

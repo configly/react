@@ -77,6 +77,8 @@ You can then use the predefined components to display text or dropdowns
 <ConfiglyDropdown prop="hello-dropdown"/>
 ```
 
+If you want to provide a default value that will display before the value is loaded, use the `default` parameter. The default value will be run through the component's render function.
+
 To render a custom component, you will pass a render function to the ConfiglyComponent. It takes a single argument, which is the value returned by Configly.
 
 ```js
