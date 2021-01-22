@@ -73,7 +73,7 @@ You will need to specify your API key using a ConfiglyContext Provider. This sho
 You can then use the predefined components to display text or dropdowns
 
 ```html
-<ConfiglyText prop="hello"/></span>
+<ConfiglyText prop="hello"/></ConfiglyText>
 <ConfiglyDropdown prop="hello-dropdown"/>
 ```
 
