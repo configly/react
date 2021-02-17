@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import {ConfiglyText, ConfiglyDropdown, ConfiglyContext} from 'configly-react';
+import {ConfiglyText, ConfiglyDropdown, ConfiglyContext, useConfigly} from 'configly-react';
 import ConfiglyComponent from 'configly-react';
 
 function renderCustom(value) {
@@ -8,6 +8,14 @@ function renderCustom(value) {
   return(<span>
     <input type="checkbox" checked={value} />
   </span>);
+}
+
+function AsyncComponent() {
+  const loadConfiglyData = useConfigly();
+
+  return (
+    <div>{ loadConfiglyData('async-data') }</div>
+  );
 }
 
 function App() {
@@ -20,6 +28,7 @@ function App() {
           <p>This is an example of a dropdown rendered dynamically by configly: <ConfiglyDropdown prop="react-dropdown" default={{ a: 'b', c: 'd'}}/> </p>
           <p>This is an example of how you can use our component to fetch any arbitrary JSON objects: <ConfiglyComponent prop="react-custom" render={renderCustom} /> </p>
         </header>
+        <AsyncComponent />
       </div>
     </ConfiglyContext.Provider>
   );

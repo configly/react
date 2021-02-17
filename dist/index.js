@@ -14,6 +14,15 @@ function loadConfiglyData(key, apiKey, onComplete) {
         .then(function (res) { return res.json(); })
         .then(function (result) { var _a; return onComplete((_a = result.data[key]) === null || _a === void 0 ? void 0 : _a.value); }, function (error) { console.log(error); });
 }
+function useConfigly() {
+    var config = React.useContext(ConfiglyContext);
+    var _a = React.useState(null), configValue = _a[0], setConfigValue = _a[1];
+    var onComplete = function (data) { return setConfigValue(data); };
+    return function (key) {
+        loadConfiglyData(key, config.apiKey, onComplete);
+        return configValue;
+    };
+}
 function BaseConfiglyComponent(props) {
     var _a = React.useState(null), value = _a[0], setValue = _a[1];
     var _b = React.useState(false), loaded = _b[0], setLoaded = _b[1];
@@ -60,4 +69,5 @@ exports.ConfiglyContext = ConfiglyContext;
 exports.ConfiglyDropdown = ConfiglyDropdown;
 exports.ConfiglyText = ConfiglyText;
 exports.default = ConfiglyComponent;
+exports.useConfigly = useConfigly;
 //# sourceMappingURL=index.js.map

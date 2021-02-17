@@ -16,6 +16,17 @@ function loadConfiglyData(key: string, apiKey: string | null, onComplete: (data:
       .then((result) => onComplete(result.data[key]?.value), (error) => {console.log(error)});
 }
 
+function useConfigly() {
+    const config = useContext(ConfiglyContext);
+    const [configValue, setConfigValue] = useState(null);
+
+    const onComplete = (data: any) => setConfigValue(data);
+    return (key: string) => {
+        loadConfiglyData(key, config.apiKey, onComplete);
+        return configValue;
+    }
+}
+
 function BaseConfiglyComponent(props: props) {
     const [value, setValue] = useState(null);
     const [loaded, setLoaded] = useState(false);
@@ -66,4 +77,4 @@ interface ConfiglyContextType {
 
 const ConfiglyContext = React.createContext<ConfiglyContextType>({apiKey: null})
 
-export {ConfiglyText, ConfiglyDropdown, ConfiglyContext, ConfiglyComponent as default};
+export {ConfiglyText, ConfiglyDropdown, ConfiglyContext, useConfigly, ConfiglyComponent as default};
