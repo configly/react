@@ -1,6 +1,6 @@
 {
   "name": "configly-react",
-  "version": "0.1.2",
+  "version": "0.2.2",
   "description": "Configly library for react",
   "main": "dist/index.js",
   "dependencies": {

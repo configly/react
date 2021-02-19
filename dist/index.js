@@ -16,25 +16,26 @@ function loadConfiglyData(key, apiKey, onComplete) {
 }
 function useConfigly() {
     var config = React.useContext(ConfiglyContext);
-    var _a = React.useState(null), configValue = _a[0], setConfigValue = _a[1];
-    var onComplete = function (data) { return setConfigValue(data); };
-    return function (key) {
-        loadConfiglyData(key, config.apiKey, onComplete);
-        return configValue;
-    };
-}
-function BaseConfiglyComponent(props) {
     var _a = React.useState(null), value = _a[0], setValue = _a[1];
-    var _b = React.useState(false), loaded = _b[0], setLoaded = _b[1];
-    var config = React.useContext(ConfiglyContext);
-    var _c = React.useState(false), requestInProgress = _c[0], setRequestInProgress = _c[1];
-    var emptyValue = value === null || value === undefined;
-    React.useEffect(function () {
+    var _b = React.useState(false), requestInProgress = _b[0], setRequestInProgress = _b[1];
+    var _c = React.useState(false), loaded = _c[0], setLoaded = _c[1];
+    var onComplete = function (data) {
+        setLoaded(true);
+        setRequestInProgress(false);
+        setValue(data);
+    };
+    var loadConfig = function (key) {
         if (!requestInProgress && !loaded) {
-            loadConfiglyData(props.prop, config.apiKey, function (value) { setValue(value); setLoaded(true); setRequestInProgress(false); });
+            loadConfiglyData(key, config.apiKey, onComplete);
             setRequestInProgress(true);
         }
-    }, [requestInProgress, value, props.prop]);
+    };
+    return { loadConfig: loadConfig, value: value, requestInProgress: requestInProgress, loaded: loaded };
+}
+function BaseConfiglyComponent(props) {
+    var _a = useConfigly(), loadConfig = _a.loadConfig, value = _a.value, loaded = _a.loaded;
+    var emptyValue = value === null || value === undefined;
+    loadConfig(props.prop);
     if (!loaded && !props.default) {
         return (React__default['default'].createElement(React__default['default'].Fragment, null, "LOADING..."));
     }
@@ -57,7 +58,7 @@ function ConfiglyText(props) {
 function ConfiglyDropdown(props) {
     var renderDropdown = function (value) {
         var options = Object.keys(value).map(function (key) {
-            return React__default['default'].createElement("option", { value: key }, value[key]);
+            return React__default['default'].createElement("option", { key: key, value: key }, value[key]);
         });
         return (React__default['default'].createElement("select", null, options));
     };

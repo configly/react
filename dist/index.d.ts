@@ -4,7 +4,12 @@ interface props {
     render?: (value: string) => JSX.Element;
     default?: any;
 }
-declare function useConfigly(): (key: string) => null;
+declare function useConfigly(): {
+    loadConfig: (key: string) => void;
+    value: null;
+    requestInProgress: boolean;
+    loaded: boolean;
+};
 declare function ConfiglyComponent(props: props): JSX.Element;
 declare function ConfiglyText(props: props): JSX.Element;
 declare function ConfiglyDropdown(props: props): JSX.Element;

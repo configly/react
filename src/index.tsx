@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 
 const CONFIGLY_SERVER_URL = "https://api.config.ly/api/v1/value";
 
@@ -18,28 +18,29 @@ function loadConfiglyData(key: string, apiKey: string | null, onComplete: (data:
 
 function useConfigly() {
     const config = useContext(ConfiglyContext);
-    const [configValue, setConfigValue] = useState(null);
+    const [value, setValue] = useState(null);
+    const [requestInProgress, setRequestInProgress] = useState(false);
+    const [loaded, setLoaded] = useState(false);
 
-    const onComplete = (data: any) => setConfigValue(data);
-    return (key: string) => {
-        loadConfiglyData(key, config.apiKey, onComplete);
-        return configValue;
+    const onComplete = (data: any) => {
+        setLoaded(true);
+        setRequestInProgress(false);
+        setValue(data);
     }
+    const loadConfig = (key: string) => {
+        if (!requestInProgress && !loaded) {
+            loadConfiglyData(key, config.apiKey, onComplete);
+            setRequestInProgress(true);
+        }
+    }
+    return { loadConfig, value, requestInProgress, loaded };
 }
 
 function BaseConfiglyComponent(props: props) {
-    const [value, setValue] = useState(null);
-    const [loaded, setLoaded] = useState(false);
-    const config = useContext(ConfiglyContext);
-    const [requestInProgress, setRequestInProgress] = useState(false);
+    const { loadConfig, value, loaded } = useConfigly();
     const emptyValue = value === null || value === undefined;
 
-    useEffect(() => {
-        if (!requestInProgress && !loaded) {
-            loadConfiglyData(props.prop, config.apiKey, (value: any) => { setValue(value); setLoaded(true); setRequestInProgress(false);});
-            setRequestInProgress(true);
-        }
-    }, [requestInProgress, value, props.prop]);
+    loadConfig(props.prop);
 
     if (!loaded && !props.default) {
         return (<React.Fragment>LOADING...</React.Fragment>)
@@ -63,7 +64,7 @@ function ConfiglyText(props: props) {
 function ConfiglyDropdown(props: props) {
     const renderDropdown =(value: string) => {
         const options = Object.keys(value).map((key) =>
-            <option value={key}>{value[key]}</option>
+            <option key={key} value={key}>{value[key]}</option>
         );
 
         return (<select>{options}</select>);

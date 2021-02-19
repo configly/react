@@ -11,10 +11,11 @@ function renderCustom(value) {
 }
 
 function AsyncComponent() {
-  const loadConfiglyData = useConfigly();
+  const { loadConfig, value } = useConfigly();
+  loadConfig('async-data');
 
   return (
-    <div>{ loadConfiglyData('async-data') }</div>
+    <div>{ value }</div>
   );
 }
 
